@@ -16,7 +16,7 @@ export async function POST(req) {
     console.log(googleUser);
     // Forward to your real backend
     const backendRes = await fetch(
-      "https://gargdental.omsok.com/api/v1/auth/social/google-register",
+      "https://api.omsnepal.com/api/v1/auth/social/google-register",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
