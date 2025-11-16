@@ -208,6 +208,7 @@ const fetchShippingCost =async () => {
   }, [selectedShippingAddress]);
 
   const handleConfirmOrderBuyNow = async () => {
+
     setIsProcessing(true);
     const orderData = {
       payment_method: selected,
@@ -244,6 +245,13 @@ const fetchShippingCost =async () => {
 
 
   const handleConfirmOrderIPS = async () =>{
+    
+    useWarningModalStore.getState().open({
+      title: "Umder Development",
+      message: "ConnectIPS is under development",
+     
+    });
+    return;
     const transId = `Tx${generateUniqueId()}`;
     const refId = `Rf${generateUniqueId()}`
     const orderData = {

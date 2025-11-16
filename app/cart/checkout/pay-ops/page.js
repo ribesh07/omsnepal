@@ -255,6 +255,12 @@ const itemsWithVat = selectedItems.map((item) => ({
   const handleOrderWallet = async ( amount,
   remarks,
   particulars) => {
+    useWarningModalStore.getState().open({
+      title: "Umder Development",
+      message: "ConnectIPS is under development",
+     
+    });
+    return;
     
   try {
     const transId = `Tx${generateUniqueId()}`;
