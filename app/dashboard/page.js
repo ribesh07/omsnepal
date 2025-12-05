@@ -10,7 +10,7 @@ import ProductShowcase from "@/components/FeaturedProduct";
 // import HeaderBarNew from "@/components/HeaderBarNew";
 import { CategoriesViews } from "@/components/CategoriesVews";
 // import TawkToWidget from "@/components/TawkToWidget";
-import TopBrandPage from "./components/topBrands";
+//import TopBrandPage from "./components/topBrands";
 import toast from "react-hot-toast";
 import TopCategoriesPage from "./components/topCategories";
 import { useFreeShippingStore } from "@/stores/ShippingThreshold";
@@ -355,7 +355,7 @@ const GargDental = () => {
 </button>
 
         </div>
-        <TopBrandPage />
+        {/* <TopBrandPage /> */}
         <TopCategoriesPage />
 
         {/* categories and manufacturers */}
@@ -415,11 +415,11 @@ const GargDental = () => {
 
           <div className="flex flex-col lg:flex-row gap-4 lg:gap-8">
             {/* Sidebar */}
-            <aside
+            {/* <aside
               className={`lg:block ${sidebarOpen ? "block" : "hidden"
                 } lg:w-64 xl:w-72`}
-            >
-              <div className="bg-gray-50 h-full flex flex-row sm:flex-col flex-wrap gap-2 rounded-lg p-3 sm:p-4 lg:p-5 shadow ">
+            > */}
+              {/* <div className="bg-gray-50 h-full flex flex-row sm:flex-col flex-wrap gap-2 rounded-lg p-3 sm:p-4 lg:p-5 shadow "> */}
                 {/* <h3 className="text-blue-900 text-base sm:text-lg font-semibold mb-3 sm:mb-4 pb-2 border-b-2 border-blue-900">
                   Categories
                 </h3>
@@ -442,15 +442,15 @@ const GargDental = () => {
 
                 {/* Manufacturers */}
 
-                <div className="px-6 py-5 border-b border-gray-100 rounded-t-xl">
+                {/* <div className="px-6 py-5 border-b border-gray-100 rounded-t-xl">
                   <div className="flex items-center space-x-3">
                     <Grid3X3 className="h-6 w-6 text-blue-600" />
                     <h3 className="text-xl font-semibold text-gray-800">Manufacturers</h3>
                   </div>
                   <p className="text-sm text-gray-600 mt-1">Explore our dental supplies</p>
-                </div>
+                </div> */}
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 text-xs overflow-y-scroll h-48 sm:h-340 hide-scrollbar">
+                {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 text-xs overflow-y-scroll h-48 sm:h-340 hide-scrollbar">
                   {manufacturers.map((manufacturer, index) => (
                     <Link
                       key={manufacturer.id || index}
@@ -460,9 +460,9 @@ const GargDental = () => {
                       {manufacturer.brand_name}
                     </Link>
                   ))}
-                </div>
-              </div>
-            </aside>
+                </div> */}
+              {/* </div> */}
+            {/* </aside> */}
 
             {/* Content Area */}
             <main className="flex-1">
