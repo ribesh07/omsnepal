@@ -10,7 +10,7 @@ import ProductShowcase from "@/components/FeaturedProduct";
 // import HeaderBarNew from "@/components/HeaderBarNew";
 import { CategoriesViews } from "@/components/CategoriesVews";
 // import TawkToWidget from "@/components/TawkToWidget";
-import TopBrandPage from "./components/topBrands";
+//import TopBrandPage from "./components/topBrands";
 import toast from "react-hot-toast";
 import TopCategoriesPage from "./components/topCategories";
 import { useFreeShippingStore } from "@/stores/ShippingThreshold";
@@ -355,7 +355,7 @@ const GargDental = () => {
 </button>
 
         </div>
-        <TopBrandPage />
+        {/* <TopBrandPage /> */}
         <TopCategoriesPage />
 
         {/* categories and manufacturers */}
