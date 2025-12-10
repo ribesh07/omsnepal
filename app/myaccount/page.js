@@ -8,6 +8,7 @@ import {
   Heart,
   MessageSquare,
   RotateCcw,
+  Package,
   Edit,
 } from "lucide-react";
 
@@ -24,6 +25,7 @@ import ManageMyAccount from "./components/ManageMyAccount";
 import AddressBook from "./components/AddressBook";
 import MyOrders from "./components/MyOrders";
 import MyWishlist from "./components/MyWishlist";
+import B2BQuickOrder from "./components/OrderTemplate";
 import MyReviews from "./components/MyReview";
 import Returnlist from "@/app/Return-list/Returnlist";
 import Complains from "./components/Complains";
@@ -53,9 +55,11 @@ const AccountPage = () => {
     profile_image: "",
   });
 
+
   const [wishlist, setWishlist] = useState([]);
 
   const [wishlistlength, setWishlistlength] = useState(0);
+
 
   const [address, setAddress] = useState([]);
   const [homeAddress, setHomeAddress] = useState(null);
@@ -66,6 +70,7 @@ const AccountPage = () => {
     { key: "address", label: "Address Book", icon: MapPin },
     { key: "orders", label: "My Orders", icon: List },
     { key: "wishlist", label: "My Wishlist", icon: Heart },
+    { key: "odertemplate", label: "Order Template", icon: Package },
     { key: "returnlist", label: "Return List", icon: RotateCcw },
     { key: "reviews", label: "My Reviews", icon: MessageSquare },
     { key: "complaint", label: "Complaint", icon: RotateCcw },
@@ -417,6 +422,7 @@ const AccountPage = () => {
           )}
           {activeTab === "orders" && <MyOrders />}
           {activeTab === "wishlist" && <MyWishlist />}
+          {activeTab === "odertemplate" && <B2BQuickOrder/>}
           {activeTab === "returnlist" && <Returnlist/>}
           {activeTab === "reviews" && <MyReviews />}
           {activeTab === "complaint" && <Complains />}
