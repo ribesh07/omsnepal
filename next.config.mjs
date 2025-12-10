@@ -5,7 +5,7 @@ const nextConfig = {
     "www.omsnepal.com",
     "omsnepal.vercel.app",
     "omsnepal.omsok.com"
-    "localhost:3000",
+    // "localhost:3000",
   ],
   async redirects() {
     return [

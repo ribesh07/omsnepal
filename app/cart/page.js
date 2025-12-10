@@ -243,6 +243,18 @@ export default function ShoppingCart() {
       return newSet;
     });
   };
+  
+  const addToTemplate = async (id) => {
+    setIsLoading(true);
+    const response = await addToBulkTemplate(id);
+    setIsLoading(false);
+    setCartItems((items) => items.filter((item) => item.id !== id));
+    setSelectedItems((prev) => {
+      const newSet = new Set(prev);
+      newSet.delete(id);
+      return newSet;
+    });
+  }
 
   const toggleSelectAll = () => {
     if (selectAll) {
@@ -447,6 +459,14 @@ export default function ShoppingCart() {
                             >
                               <Trash2 className="w-5 h-5  cursor-pointer" />
                             </button>
+
+
+                            <button
+                              onClick={() => addToTemplate(item.id)}
+                              className="text-red-500 hover:text-red-700 p-1 ml-1 flex-shrink-0 cursor-pointer"
+                            >
+                              Add to template
+                            </button>
                           </div>
 
                           {/* Quantity Controls and Total - Mobile */}
@@ -570,6 +590,17 @@ export default function ShoppingCart() {
                           >
                             <Trash2 className="w-5 h-5 ml-1" />
                           </button>
+
+
+                          <button
+                              onClick={() => addToTemplate(item.id)}
+                              className="text-red-500 hover:text-red-700 p-1 ml-1 flex-shrink-0 cursor-pointer"
+                            >
+                              Add to template
+                            </button>
+
+
+
                         </div>
                       </div>
                     ))}
