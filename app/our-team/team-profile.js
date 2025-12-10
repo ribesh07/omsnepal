@@ -42,7 +42,7 @@ export default function TeamSection() {
         {team.map((member) => (
           <div key={member.id} className="text-center relative">
             <img
-              src={`https://gargdental.omsok.com/storage/app/public/${member.team_image}`}
+              src={`https://api.omsnepal.com/storage/app/public/${member.team_image}`}
               alt={member.team_name}
               className="w-32 h-32 rounded-full mx-auto object-cover shadow"
             />
