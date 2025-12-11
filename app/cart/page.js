@@ -592,16 +592,17 @@ export default function ShoppingCart() {
                           </button>
 
 
-                          <button
-                              onClick={() => addToTemplate(item.id)}
-                              className="text-red-500 hover:text-red-700 p-1 ml-1 flex-shrink-0 cursor-pointer"
-                            >
-                              Add to template
-                            </button>
+                          
 
 
 
                         </div>
+                        <button
+                              onClick={() => addToTemplate(item.id)}
+                              className="text-white bg-blue-500 rounded hover:bg-blue-700 p-2 ml-30 flex-shrink-0 cursor-pointer"
+                            >
+                              Add to template
+                            </button>
                       </div>
                     ))}
                   </div>
