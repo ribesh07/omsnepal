@@ -65,7 +65,7 @@ export default function ShoppingCart() {
               image:
                 item.product.image_full_url ||
                 item.product.main_image_full_url ||
-                "https://dentalnepal.com/assets/logo.png",
+                "/logo.png",
               name: item.product.product_name,
               product_code: item.product.product_code,
               quantity: item.quantity,
@@ -243,18 +243,78 @@ export default function ShoppingCart() {
       return newSet;
     });
   };
+
+  const TEMPLATE_KEY = "quickOrderTemplate";
+
+const getTemplateItems = () => {
+  if (typeof window === "undefined") return [];
+  return JSON.parse(localStorage.getItem(TEMPLATE_KEY)) || [];
+};
+
+const setTemplateItems = (items) => {
+  localStorage.setItem(TEMPLATE_KEY, JSON.stringify(items));
+};
   
-  const addToTemplate = async (id) => {
-    setIsLoading(true);
-    const response = await addToBulkTemplate(id);
+  // const addToTemplate = async (item) => {
+  //   setIsLoading(true);
+
+  //   try{
+
+
+  //   }
+  //   catch(error){
+  //     console.log("Error adding to template:", error);
+  //     toast.error("Failed to add to template. Please try again later.");
+  //   }finally{
+  //     setIsLoading(false);
+  //   }
+  //   // const response = await addToBulkTemplate(id);
+  //   // setIsLoading(false);
+  //   // setCartItems((items) => items.filter((item) => item.id !== id));
+  //   // setSelectedItems((prev) => {
+  //   //   const newSet = new Set(prev);
+  //   //   newSet.delete(id);
+  //   //   return newSet;
+  //   // });
+  // }
+
+  const addToTemplate = async (item) => {
+  setIsLoading(true);
+
+  try {
+    const existingItems = getTemplateItems();
+    console.log("Existing template items:", existingItems);
+    console.log("Item received:", item);
+
+
+    // check if item already exists
+    const exists = existingItems.find((p) => p.id === item.id);
+
+    let updatedItems;
+
+    if (exists) {
+      // update quantity if already exists
+      updatedItems = existingItems.map((p) =>
+        p.id === item.id
+          ? { ...p, quantity: p.quantity + item.quantity }
+          : p
+      );
+    } else {
+      // add new item
+      updatedItems = [...existingItems, item];
+    }
+
+    setTemplateItems(updatedItems);
+
+    toast.success("Item added to template!");
+  } catch (error) {
+    console.log("Error adding to template:", error);
+    toast.error("Failed to add to template. Please try again later.");
+  } finally {
     setIsLoading(false);
-    setCartItems((items) => items.filter((item) => item.id !== id));
-    setSelectedItems((prev) => {
-      const newSet = new Set(prev);
-      newSet.delete(id);
-      return newSet;
-    });
   }
+};
+
 
   const toggleSelectAll = () => {
     if (selectAll) {
@@ -462,7 +522,7 @@ export default function ShoppingCart() {
 
 
                             <button
-                              onClick={() => addToTemplate(item.id)}
+                              onClick={() => addToTemplate(item)}
                               className="text-red-500 hover:text-red-700 p-1 ml-1 flex-shrink-0 cursor-pointer"
                             >
                               Add to template
@@ -598,7 +658,7 @@ export default function ShoppingCart() {
 
                         </div>
                         <button
-                              onClick={() => addToTemplate(item.id)}
+                              onClick={() => addToTemplate(item)}
                               className="text-white bg-blue-500 rounded hover:bg-blue-700 p-2 ml-30 flex-shrink-0 cursor-pointer"
                             >
                               Add to template

@@ -4,76 +4,103 @@ import { useState } from "react";
 import { ShoppingCart, Trash2, Plus, Minus, Package } from "lucide-react";
 import { useCartStore } from "@/stores/useCartStore";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { toast } from "react-hot-toast";
 
 
 
 export default function B2BQuickOrder() {
-  const [products, setProducts] = useState([
-    {
-      id: 1,
-      name: "Scissors ",
-      Deli: "92",
-      unitPrice: 1.0,
-      quantity: 1,
-      image: "✂️",
-      category: "St Supplies",
-    },
-    {
-      id: 2,
-      name: "Mixing Spatula - Plastic Handle",
-      Deli: "141",
-      unitPrice: 45.0,
-      quantity: 1,
-      image: "🔷",
-      category: "Mixing Tools",
-    },
-    {
-      id: 3,
-      name: "Stickers",
-      Deli: "147",
-      unitPrice: 135.0,
-      quantity: 1,
-      image: "💎",
-      category: "Burs",
-    },
-    {
-      id: 4,
-      name: "AIZ ENAMEL CHISEL 6",
-      Deli: "332",
-      unitPrice: 200.0,
-      quantity: 1,
-      image: "🔧",
-      category: "Instruments",
-    },
-    {
-      id: 5,
-      name: "books",
-      Deli: "345",
-      unitPrice: 200.0,
-      quantity: 1,
-      image: "🔨",
-      category: "Instruments",
-    },
-  ]);
+   const [templateItems, setTemplateItems] = useState([]);
 
   const [selectedItems, setSelectedItems] = useState(new Set());
   const [selectAll, setSelectAll] = useState(false);
+    const router = useRouter();
 
-  const router = useRouter();
+  const TEMPLATE_KEY = "quickOrderTemplate";
+
+const getTemplateItems = () => {
+  if (typeof window === "undefined") return [];
+  return JSON.parse(localStorage.getItem(TEMPLATE_KEY)) || [];
+};
+
+const setTemplateItemss = (items) => {
+  localStorage.setItem(TEMPLATE_KEY, JSON.stringify(items));
+};
+useEffect(() => {
+  if (typeof window === "undefined") return;
+
+  const stored = getTemplateItems();
+
+  const normalized = stored.map((item) => ({
+    id: item.id,
+    name: item.name,
+    image: item.image,
+    category: item.category,
+    unitPrice: Number(item.unitPrice ?? item.price ?? 0),
+    quantity: Number(item.quantity) || 1,
+    product_code: item.product_code,
+    available_quantity: item.available_quantity,
+  }));
+  console.log("Loaded template items:", normalized);
+
+  setTemplateItems(normalized);
+}, []); // ✅ EMPTY DEP ARRAY (IMPORTANT)
+
+
+  if (templateItems.length === 0) {
+    return (
+      <div className="p-6 text-center text-gray-500">
+        No items in template
+      </div>
+    );
+  }
+
+
+
+  const clearTemplate = () => {
+  localStorage.removeItem("quickOrderTemplate");
+  setTemplateItems([]);
+  setTemplateItemss([]);
+    toast.success("Template cleared");
+    window.location.reload();
+};
+
 
   const updateQuantity = (id, delta) => {
-    setProducts(
-      products.map((p) =>
-        p.id === id ? { ...p, quantity: Math.max(1, p.quantity + delta) } : p
-      )
-    );
-  };
+  const updated = templateItems.map((p) =>
+    p.id === id
+      ? { ...p, quantity: Math.max(1, p.quantity + delta) }
+      : p
+  );
 
-  const removeItem = (id) => {
-    setProducts(products.filter((p) => p.id !== id));
-    selectedItems.delete(id);
-    setSelectedItems(new Set(selectedItems));
-  };
+  setTemplateItems(updated);
+  setTemplateItemss(
+  updated.map((item) => ({
+    ...item,
+    price: item.unitPrice, // 🔥 keep price for reload safety
+  }))
+);
+
+};
+
+const removeItem = (id) => {
+  const updated = templateItems.filter((p) => p.id !== id);
+
+  setTemplateItems(updated);
+  setTemplateItemss(
+    updated.map((item) => ({
+      ...item,
+      price: item.unitPrice,
+    }))
+  );
+
+  setSelectedItems((prev) => {
+    const s = new Set(prev);
+    s.delete(id);
+    return s;
+  });
+};
+
 
   const toggleSelect = (id) => {
     const newSelected = new Set(selectedItems);
@@ -83,14 +110,14 @@ export default function B2BQuickOrder() {
       newSelected.add(id);
     }
     setSelectedItems(newSelected);
-    setSelectAll(newSelected.size === products.length);
+    setSelectAll(newSelected.size === templateItems.length);
   };
 
   const toggleSelectAll = () => {
     if (selectAll) {
       setSelectedItems(new Set());
     } else {
-      setSelectedItems(new Set(products.map((p) => p.id)));
+      setSelectedItems(new Set(templateItems.map((p) => p.id)));
     }
     setSelectAll(!selectAll);
   };
@@ -101,20 +128,26 @@ export default function B2BQuickOrder() {
   };
 
   const getTotalAmount = () => {
-    return products
+    return templateItems
       .reduce((sum, p) => sum + p.unitPrice * p.quantity, 0)
-      .toFixed(2);
+      ;
   };
 
-  const getSelectedTotal = () => {
-    return products
-      .filter((p) => selectedItems.has(p.id))
-      .reduce((sum, p) => sum + p.unitPrice * p.quantity, 0)
-      .toFixed(2);
-  };
+const getSelectedTotal = () => {
+  const total = templateItems
+    .filter((p) => selectedItems.has(p.id))
+    .reduce(
+      (sum, p) =>
+        sum + Number(p.unitPrice || 0) * Number(p.quantity || 0),
+      0
+    );
+
+  return total.toFixed(2);
+};
+
 
   const addToCart = () => {
-    const itemsToAdd = products.filter((p) => selectedItems.has(p.id));
+    const itemsToAdd = templateItems.filter((p) => selectedItems.has(p.id));
     alert(
       `Adding ${
         itemsToAdd.length
@@ -139,11 +172,24 @@ export default function B2BQuickOrder() {
             </div>
             <button
               onClick={() => router.push("/cart")}
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center gap-2 font-semibold"
+              className="bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center gap-2 font-semibold"
             >
               <ShoppingCart className="w-5 h-5" />
               Add Products
             </button>
+            <button
+                  onClick={clearTemplate}
+                  disabled={templateItems.length === 0}
+                  className="bg-red-600 text-white ml-2 p-4 py-3 rounded-lg 
+                            hover:bg-red-700 disabled:bg-gray-300 
+                            disabled:cursor-not-allowed 
+                            flex items-center gap-2 font-semibold"
+                >
+                  <ShoppingCart className="w-5 h-5" />
+                  Clear Template
+                </button>
+
+
           </div>
 
           {/* Select Controls */}
@@ -156,7 +202,7 @@ export default function B2BQuickOrder() {
                 className="w-5 h-5 rounded border-gray-300"
               />
               <span className="font-medium text-gray-700">
-                SELECT ALL ({products.length} ITEMS)
+                SELECT ALL ({templateItems.length} ITEMS)
               </span>
             </label>
             <button
@@ -170,9 +216,9 @@ export default function B2BQuickOrder() {
 
         {/* Product List */}
         <div className="space-y-4">
-          {products.map((product) => (
+          {templateItems.map((product) => (
             <div
-              key={product.id}
+              key={product.product_code}
               className="bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow"
             >
               <div className="flex items-center gap-4">
@@ -185,8 +231,12 @@ export default function B2BQuickOrder() {
                 />
 
                 {/* Product Image */}
-                <div className="w-20 h-20 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg flex items-center justify-center text-3xl">
-                  {product.image}
+               <div className="w-20 h-20 bg-gray-50 rounded-lg flex items-center justify-center">
+                  <img
+                    src={product.image}
+                    // alt={product.name}
+                    className="w-full h-full object-cover rounded-lg"
+                  />
                 </div>
 
                 {/* Product Info */}
@@ -194,21 +244,22 @@ export default function B2BQuickOrder() {
                   <h3 className="font-semibold text-gray-900 text-lg">
                     {product.name}
                   </h3>
-                  <div className="flex items-center gap-4 mt-1">
+                  {/* <div className="flex items-center gap-4 mt-1">
                     <span className="text-sm text-gray-500">
-                      Deli: {product.Deli}
+                      Code: {product.product_code}
                     </span>
+
                     <span className="text-sm bg-blue-50 text-blue-700 px-2 py-1 rounded">
                       {product.category}
                     </span>
-                  </div>
+                  </div> */}
                 </div>
 
                 {/* Unit Price */}
                 <div className="text-right">
                   <div className="text-sm text-gray-500">Unit Price</div>
                   <div className="text-lg font-semibold text-gray-900">
-                    Rs. {product.unitPrice.toFixed(2)}
+                    Rs. {product.unitPrice}
                   </div>
                 </div>
 
@@ -225,8 +276,8 @@ export default function B2BQuickOrder() {
                     value={product.quantity}
                     onChange={(e) => {
                       const val = parseInt(e.target.value) || 1;
-                      setProducts(
-                        products.map((p) =>
+                      setTemplateItems(
+                        templateItems.map((p) =>
                           p.id === product.id
                             ? { ...p, quantity: Math.max(1, val) }
                             : p
@@ -268,7 +319,7 @@ export default function B2BQuickOrder() {
           <div className="flex items-center justify-between">
             <div>
               <div className="text-sm text-gray-600">
-                {selectedItems.size} of {products.length} items selected
+                {selectedItems.size} of {templateItems.length} items selected
               </div>
               <div className="text-2xl font-bold text-gray-900 mt-1">
                 Total Amount: Rs. {getSelectedTotal()}
