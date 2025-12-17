@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@prisma/client": "^6.19.1",
     "crypto-js": "^4.2.0",
     "dompurify": "^3.2.6",
     "google-auth-library": "^10.1.0",
@@ -30,6 +31,7 @@
     "@tailwindcss/postcss": "^4",
     "@types/node": "24.0.15",
     "@types/react": "19.1.8",
+    "prisma": "^6.19.1",
     "tailwind-scrollbar-hide": "^4.0.0",
     "tailwindcss": "^4",
     "typescript": "5.8.3"
